@@ -58,9 +58,9 @@ public class Game extends ApplicationAdapter {
 		lastInstant = thisInstant;
 
 		// 更新怪物
-			for (int i = 0; i < entities.size(); i++) {
-				entities.get(i).update(deltaTime);
-			}
+		for (int i = 0; i < entities.size(); i++) {
+			entities.get(i).update(deltaTime);
+		}
 	}
 
 	/**
@@ -85,8 +85,10 @@ public class Game extends ApplicationAdapter {
 			}
 		}
 		for (int i = 0; i < entities.size(); i++) {
-				entities.get(i).draw(batch);
+			entities.get(i).draw(batch);
 		}
+		Vector2 snatch = playerCharacter.getSnatch().cpy().scl(cosmetics.get("man").sw, cosmetics.get("man").sh);
+		cosmetics.get("dog").draw(batch, snatch.x, snatch.y, 2.0f);
 		batch.end();
 	}
 
