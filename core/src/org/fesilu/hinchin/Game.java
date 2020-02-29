@@ -2,6 +2,7 @@ package org.fesilu.hinchin;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -35,7 +36,7 @@ public class Game extends ApplicationAdapter {
 		// 初始化玩家和实体列表
 		entities = new ArrayList<>();
 		playerCharacter = new Entity(new Vector2(0.0f, 0.0f), cosmetics.get("man"), 2.0f);
-		playerCharacter.setSnatch(new Vector2(1.0f, 0.0f));
+		playerCharacter.setSnatch(new Vector2(0.0f, 0.0f));
 		entities.add(playerCharacter);
 
 		// 运行初试 Hinchin 脚本
@@ -68,6 +69,8 @@ public class Game extends ApplicationAdapter {
 		// 更新游戏
 		update();
 
+		updatePlayerCharacter();
+
 		// 清除屏幕
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -91,12 +94,28 @@ public class Game extends ApplicationAdapter {
 
 	/**
 	 * 大规模加载小贴图。
+	 *
 	 * @param file 文件
 	 */
 	private HashMap<String, Fairy> loadFairies(File file) {
 		Processor processor = new Processor(file, 512, null);
 		processor.run();
 		return processor.fairies;
+	}
+
+	void updatePlayerCharacter() {
+		if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+			playerCharacter.getSnatch().add(0, 0.5f);
+		}
+		if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+			playerCharacter.getSnatch().add(0, -0.5f);
+		}
+		if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+			playerCharacter.getSnatch().add(-0.5f, 0);
+		}
+		if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+			playerCharacter.getSnatch().add(0.5f, 0);
+		}
 	}
 
 	// deltaTime 是每一帧和上一帧的时差。这样可以保证不稳定的 FPS 下游戏一样正常运行。单位是秒。
