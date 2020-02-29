@@ -78,6 +78,6 @@ public class Generator {
 
     public static Terrain[][] generateIsland( int w, int h) {
         Terrain[][] map = new Terrain[h][w];
-
+        return map;
     }
 }
