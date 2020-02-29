@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Processor 可以用来读取一系列的 Hinchin 脚本，语法由我们自己瞎几把决定。
@@ -21,8 +22,10 @@ public class Processor {
      * 推荐的 reserve 是 512。
      * texture 可以为空；这个只是 fairy 初值。
      * @param file 文件
+     * @param reserve 内存大小 （以 int 算）
+     * @param game 游戏，可传可不传。可以传就可以操控游戏的各种数据。
      */
-    public Processor(File file, int reserve) {
+    public Processor(File file, int reserve, Game game) {
         // 读取指令
         instructions = readOrDie(file).trim().toLowerCase().split("[\\s\\n]");
         counter = 0;
@@ -32,7 +35,8 @@ public class Processor {
         pointer = -1;
 
         // 用于贴图读取脚本
-        fairies = new ArrayList<>();
+        fairies = new HashMap<>();
+        this.game = game;
     }
 
     /**
@@ -111,7 +115,7 @@ public class Processor {
             int fairySize = 16;
             int y = pop(), x = pop();
             Fairy fairy = new Fairy(texture, data[pop()], x * 16, y * 16, 16, 16);
-            fairies.add(fairy);
+            fairies.put(fairy.name, fairy);
             System.out.println("INFO: Fairy added: " + fairy.name + " at " + x + ", " + y);
         } else if (instruction.equals("texture")) {
             int a = pop();
@@ -175,6 +179,7 @@ public class Processor {
                 }
                 baos.write(raw, 0, len);
             }
+            reader.close();
             return baos.toString();
         } catch (IOException e) {
             e.printStackTrace();
@@ -203,6 +208,7 @@ public class Processor {
     private int pointer;
     private int waypoint;
 
-    public ArrayList<Fairy> fairies;
-    Texture texture;
+    public HashMap<String, Fairy> fairies;
+    private Texture texture;
+    private Game game;
 }

@@ -5,9 +5,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 /**
@@ -21,7 +23,7 @@ public class Game extends ApplicationAdapter {
 	 * 其中应该包括材质加载，地图生成，还有各种值初始化啥的。
 	 */
 	@Override
-	public void create () {
+	public void create() {
 		batch = new SpriteBatch();
 
 		// 时间
@@ -29,6 +31,16 @@ public class Game extends ApplicationAdapter {
 
 		cosmetics = loadFairies(Gdx.files.internal("cosmetics.hc").file());
 		terrains = loadFairies(Gdx.files.internal("terrain.hc").file());
+
+		// 初始化玩家和实体列表
+		entities = new ArrayList<>();
+		playerCharacter = new Entity(new Vector2(0.0f, 0.0f), cosmetics.get("man"), 2.0f);
+		playerCharacter.snatch = new Vector2(1.0f, 0.0f);
+		entities.add(playerCharacter);
+
+		// 运行初试 Hinchin 脚本
+		Processor processor = new Processor(Gdx.files.internal("init.hc").file(), 512, this);
+		processor.run();
 	}
 
 	/**
@@ -40,6 +52,11 @@ public class Game extends ApplicationAdapter {
 		long thisInstant = System.currentTimeMillis();
 		deltaTime = (float) (thisInstant - lastInstant) / 1000.0f;
 		lastInstant = thisInstant;
+
+		// 更新怪物
+		for (int i = 0; i < entities.size(); i++) {
+			entities.get(i).update(deltaTime);
+		}
 	}
 
 	/**
@@ -47,16 +64,19 @@ public class Game extends ApplicationAdapter {
 	 * 一开始会调用 OpenGL 的清屏，之后会把各种材质渲染上去。
 	 */
 	@Override
-	public void render () {
+	public void render() {
 		// 更新游戏
 		update();
+
 		// 清除屏幕
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
 		// 开始绘画材质
 		batch.begin();
-		terrains.get(0).draw(batch, 10.0f, 10.0f, 2.0f);
-		cosmetics.get(1).draw(batch, 10.0f, 10.0f, 2.0f);
+		for (int i = 0; i < entities.size(); i++) {
+			entities.get(i).draw(batch);
+		}
 		batch.end();
 	}
 
@@ -73,18 +93,23 @@ public class Game extends ApplicationAdapter {
 	 * 大规模加载小贴图。
 	 * @param file 文件
 	 */
-	private ArrayList<Fairy> loadFairies(File file) {
-		Processor processor = new Processor(file, 512);
+	private HashMap<String, Fairy> loadFairies(File file) {
+		Processor processor = new Processor(file, 512, null);
 		processor.run();
 		return processor.fairies;
 	}
 
 	// deltaTime 是每一帧和上一帧的时差。这样可以保证不稳定的 FPS 下游戏一样正常运行。单位是秒。
 	private float deltaTime;
+
 	// lastInstant 是上一个瞬间的 System.currentTimeMillis. 用于计算毫秒级的 deltaTime。
 	private long lastInstant;
 	SpriteBatch batch;
+
 	// 人，动物等
-	ArrayList<Fairy> cosmetics;
-	ArrayList<Fairy> terrains;
+	// 因为在同一个包内，这些是 Processor (脚本) 可以访问的东西
+	HashMap<String, Fairy> cosmetics;
+	HashMap<String, Fairy> terrains;
+	ArrayList<Entity> entities;
+	Entity playerCharacter;
 }
