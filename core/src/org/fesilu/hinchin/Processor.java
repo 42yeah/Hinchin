@@ -30,7 +30,7 @@ public class Processor {
         instructions = readOrDie(file).trim().toLowerCase().split("[\\s\\n]");
         counter = 0;
         // 初始化虚拟机内存
-        memory = new int[reserve];
+        memory = new float[reserve];
         data = new String[reserve];
         pointer = -1;
 
@@ -68,23 +68,23 @@ public class Processor {
         if (instruction.equals("end")) {
             return true;
         } else if (instruction.equals("push")) {
-            push(toNumber(fetch()));
+            pushf(toNumber(fetch()));
         } else if (instruction.equals("say")) {
-            System.out.println("INFO: Say at " + pointer + ": " + pop());
+            System.out.println("INFO: Say at " + pointer + ": " + popf());
         } else if (instruction.equals("add")) {
-            int a = pop(), b = pop();
-            push(a + b);
+            float a = popf(), b = popf();
+            pushf(a + b);
         } else if (instruction.equals("sub")) {
-            int a = pop(), b = pop();
-            push(b - a);
+            float a = popf(), b = popf();
+            pushf(b - a);
         } else if (instruction.equals("mul")) {
-            int a = pop(), b = pop();
-            push(a * b);
+            float a = popf(), b = popf();
+            pushf(a * b);
         } else if (instruction.equals("div")) {
-            int a = pop(), b = pop();
-            push(b / a);
+            float a = popf(), b = popf();
+            pushf(b / a);
         } else if (instruction.equals("data")) {
-            int a = toNumber(fetch());
+            int a = (int) toNumber(fetch());
             String b = fetch();
             data[a] = b;
         } else if (instruction.equals("saydata")) {
@@ -92,6 +92,15 @@ public class Processor {
             System.out.println("INFO: SayData at " + pointer + ": " + data[a]);
         } else if (instruction.equals("cmp")) {
             int b = pop(), a = pop();
+            int res = 0;
+            if (a > b) {
+                res = 1;
+            } else if (a < b) {
+                res = -1;
+            }
+            push(res);
+        } else if (instruction.equals("cmpf")) {
+            float b = popf(), a = popf();
             int res = 0;
             if (a > b) {
                 res = 1;
@@ -128,9 +137,9 @@ public class Processor {
                 counter += toNumber(fetch());
             }
         } else if (instruction.equals("clone")) {
-            int a = pop();
-            push(a);
-            push(a);
+            float a = popf();
+            pushf(a);
+            pushf(a);
         } else if (instruction.equals("do")) {
             waypoint = counter;
         } else if (instruction.equals("loop")) {
@@ -138,7 +147,7 @@ public class Processor {
         } else if (instruction.equals("fairy")) {
             int fairySize = 16;
             int y = pop(), x = pop();
-            Fairy fairy = new Fairy(texture, data[pop()], x * 16, y * 16, 16, 16);
+            Fairy fairy = new Fairy(texture, data[pop()], x * 16, y * 16, 16, 16, pop() == 1);
             fairies.put(fairy.name, fairy);
             System.out.println("INFO: Fairy added: " + fairy.name + " at " + x + ", " + y);
         } else if (instruction.equals("texture")) {
@@ -171,12 +180,35 @@ public class Processor {
             System.err.println("WARNING! Pointer is overflowing / underflowing");
             return 0;
         }
-        int ret = memory[pointer];
+        int ret = (int) memory[pointer];
         pointer--;
         return ret;
     }
 
-    private void push(int value) {
+    /**
+     * popf() 返回在最顶端的数值。加 f 保存精度。
+     * @return 有精度的 f
+     */
+    private float popf() {
+        if (pointer >= memory.length || pointer < 0) {
+            System.err.println("WARNING! Pointer is overflowing / underflowing");
+            return 0;
+        }
+        float ret = memory[pointer];
+        pointer--;
+        return ret;
+    }
+
+    public void push(int value) {
+        pointer++;
+        if (pointer >= memory.length || pointer < 0) {
+            System.err.println("WARNING! Pointer is overflowing / underflowing");
+            return;
+        }
+        memory[pointer] = value;
+    }
+
+    public void pushf(float value) {
         pointer++;
         if (pointer >= memory.length || pointer < 0) {
             System.err.println("WARNING! Pointer is overflowing / underflowing");
@@ -212,22 +244,34 @@ public class Processor {
     }
 
     /**
+     * 程序重置。
+     */
+    public void reset() {
+        counter = 0;
+        pointer = -1;
+    }
+
+    /**
      * 转换成数字。因为懒得写
      * @param string 数字字符串
      * @return 数字
      */
-    private int toNumber(String string) {
+    private float toNumber(String string) {
         try {
-            return Integer.parseInt(string);
+            return Float.parseFloat(string);
         } catch (NumberFormatException e) {
             System.err.println("ERR! Number format at " + (counter - 1) + ": " + string);
             return 0;
         }
     }
 
+    public String[] getData() {
+        return data;
+    }
+
     private String[] instructions;
     private int counter;
-    private int[] memory;
+    private float[] memory;
     private String[] data;
     private int pointer;
     private int waypoint;

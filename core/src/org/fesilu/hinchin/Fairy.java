@@ -11,13 +11,14 @@ import com.badlogic.gdx.math.Matrix4;
  */
 public class Fairy {
     Fairy() {}
-    Fairy(Texture texture, String name, int sx, int sy, int sw, int sh) {
+    Fairy(Texture texture, String name, int sx, int sy, int sw, int sh, boolean obstacle) {
         this.texture = texture;
         this.name = name;
         this.sx = sx;
         this.sy = sy;
         this.sw = sw;
         this.sh = sh;
+        this.obstacle = obstacle;
     }
 
     /**
@@ -35,4 +36,5 @@ public class Fairy {
     String name;
     Texture texture;
     int sx, sy, sw, sh;
+    boolean obstacle;
 }

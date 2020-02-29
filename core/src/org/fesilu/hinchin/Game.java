@@ -40,12 +40,7 @@ public class Game extends ApplicationAdapter {
 		entities.add(playerCharacter);
 
 		// 测试地图
-		map = new Terrain[80][100]; // 100x80 的地图
-		for (int y = 0; y < 80; y++) {
-			for (int x = 0; x < 100; x++) {
-				map[y][x] = new Terrain(new Vector2(x, y), terrains.get("grass"), 2.0f);
-			}
-		}
+		map = Generator.generate(new Processor(Gdx.files.internal("island_gen.hc").file(), 512, null), terrains, 10, 10);
 
 		// 运行初试 Hinchin 脚本
 		Processor processor = new Processor(Gdx.files.internal("init.hc").file(), 512, this);
@@ -76,7 +71,6 @@ public class Game extends ApplicationAdapter {
 	public void render() {
 		// 更新游戏
 		update();
-
 		updatePlayerCharacter();
 
 		// 清除屏幕
@@ -85,8 +79,8 @@ public class Game extends ApplicationAdapter {
 
 		// 开始绘画材质
 		batch.begin();
-		for (int y = 0; y < 80; y++) {
-			for (int x = 0; x < 100; x++) {
+		for (int y = 0; y < 10; y++) {
+			for (int x = 0; x < 10; x++) {
 				map[y][x].draw(batch);
 			}
 		}
@@ -116,6 +110,9 @@ public class Game extends ApplicationAdapter {
 		return processor.fairies;
 	}
 
+	/**
+	 * 挪动角色。
+	 */
 	void updatePlayerCharacter() {
 		if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
 			playerCharacter.getSnatch().add(0, 1.0f);

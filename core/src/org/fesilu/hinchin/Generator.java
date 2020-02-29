@@ -2,6 +2,8 @@ package org.fesilu.hinchin;
 
 import com.badlogic.gdx.math.Vector2;
 
+import java.util.HashMap;
+
 /**
  * Generator 是地图生成器，用来生成各种地图。
  * 里面应该只有静态类。
@@ -76,8 +78,18 @@ public class Generator {
         return a.cpy().scl(1.0f - v, 1.0f - v).add(b.cpy().scl(v, v));
     }
 
-    public static Terrain[][] generateIsland( int w, int h) {
+    public static Terrain[][] generate(Processor processor, HashMap<String, Fairy> fairies, int w, int h) {
         Terrain[][] map = new Terrain[h][w];
+        for (int y = 0; y < h; y++) {
+            for (int x = 0; x < w; x++) {
+                processor.reset();
+                processor.pushf((float) x / w);
+                processor.pushf((float) y / h);
+                processor.run();
+                Fairy fairy = fairies.get(processor.getData()[0]);
+                map[y][x] = new Terrain(new Vector2(x, y), fairy.obstacle, fairy, 2.0f);
+            }
+        }
         return map;
     }
 }
