@@ -30,7 +30,7 @@ public class Game extends ApplicationAdapter {
 		// 时间
 		lastInstant = System.currentTimeMillis();
 
-		Processor cosmeticProcessor = new Processor("cosmetics.hc", 512, cosmeticsTexture);
+		Processor cosmeticProcessor = new Processor(Gdx.files.internal("cosmetics.hc").file(), 512, cosmeticsTexture);
 		cosmeticProcessor.run();
 		cosmetics = cosmeticProcessor.fairies;
 	}
@@ -55,11 +55,11 @@ public class Game extends ApplicationAdapter {
 		// 更新游戏
 		update();
 		// 清除屏幕
-		Gdx.gl.glClearColor(1, 0, 0, 1);
+		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		// 开始绘画材质
 		batch.begin();
-		cosmetics.get(1).draw(batch, 10.0f, 10.0f);
+		cosmetics.get(1).draw(batch, 10.0f, 10.0f, 2.0f);
 		batch.end();
 	}
 

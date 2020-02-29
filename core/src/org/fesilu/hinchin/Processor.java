@@ -19,11 +19,11 @@ public class Processor {
      * 由空格 ( ) 分割表达式。但其实我们没有表达式，一切都根据 GPP 中的字节码来做。
      * 推荐的 reserve 是 512。
      * texture 可以为空；这个只是 fairy 初值。
-     * @param path 路径
+     * @param file 文件
      */
-    public Processor(String path, int reserve, Texture texture) {
+    public Processor(File file, int reserve, Texture texture) {
         // 读取指令
-        instructions = readOrDie(path).trim().toLowerCase().split("[\\s\\n]");
+        instructions = readOrDie(file).trim().toLowerCase().split("[\\s\\n]");
         counter = 0;
         // 初始化虚拟机内存
         memory = new int[reserve];
@@ -156,12 +156,12 @@ public class Processor {
 
     /**
      * 读取文件。假如失败，返回空字符串（不报错）。
-     * @param path 路径
+     * @param file 文件
      * @return 文件内容
      */
-    private String readOrDie(String path) {
+    private String readOrDie(File file) {
         try {
-            FileInputStream reader = new FileInputStream(path);
+            FileInputStream reader = new FileInputStream(file);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             while (true) {
                 byte[] raw = new byte[1024];
