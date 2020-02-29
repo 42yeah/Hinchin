@@ -6,6 +6,9 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import java.io.File;
+import java.util.ArrayList;
+
 
 /**
  * Game 是核心游戏类。游戏的渲染，创建，和扔掉都会在这里进行。
@@ -13,9 +16,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  * 假如其他写好的玩意儿要通信，他们应该要比 Game 低一个等级。
  */
 public class Game extends ApplicationAdapter {
-	SpriteBatch batch;
-	Texture img;
-
 	/**
 	 * create() 是在游戏创建的时候调用的第一个函数。
 	 * 其中应该包括材质加载，地图生成，还有各种值初始化啥的。
@@ -25,10 +25,14 @@ public class Game extends ApplicationAdapter {
 		batch = new SpriteBatch();
 
 		// 材质加载
-		img = new Texture("badlogic.jpg");
+		cosmeticsTexture = new Texture("hinchin.cosmetics.png");
 
 		// 时间
 		lastInstant = System.currentTimeMillis();
+
+		Processor cosmeticProcessor = new Processor("cosmetics.hc", 512, cosmeticsTexture);
+		cosmeticProcessor.run();
+		cosmetics = cosmeticProcessor.fairies;
 	}
 
 	/**
@@ -55,7 +59,7 @@ public class Game extends ApplicationAdapter {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		// 开始绘画材质
 		batch.begin();
-		batch.draw(img, 0, 0);
+		cosmetics.get(1).draw(batch, 10.0f, 10.0f);
 		batch.end();
 	}
 
@@ -66,11 +70,16 @@ public class Game extends ApplicationAdapter {
 	@Override
 	public void dispose () {
 		batch.dispose();
-		img.dispose();
+		cosmeticsTexture.dispose();
 	}
 
 	// deltaTime 是每一帧和上一帧的时差。这样可以保证不稳定的 FPS 下游戏一样正常运行。单位是秒。
 	private float deltaTime;
 	// lastInstant 是上一个瞬间的 System.currentTimeMillis. 用于计算毫秒级的 deltaTime。
 	private long lastInstant;
+	SpriteBatch batch;
+	// 人，动物等
+	Texture cosmeticsTexture;
+	ArrayList<Fairy> cosmetics;
+
 }
