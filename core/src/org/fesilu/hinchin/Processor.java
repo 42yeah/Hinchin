@@ -1,6 +1,7 @@
 package org.fesilu.hinchin;
 
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 
 import java.io.*;
@@ -21,7 +22,7 @@ public class Processor {
      * texture 可以为空；这个只是 fairy 初值。
      * @param file 文件
      */
-    public Processor(File file, int reserve, Texture texture) {
+    public Processor(File file, int reserve) {
         // 读取指令
         instructions = readOrDie(file).trim().toLowerCase().split("[\\s\\n]");
         counter = 0;
@@ -31,7 +32,6 @@ public class Processor {
         pointer = -1;
 
         // 用于贴图读取脚本
-        this.texture = texture;
         fairies = new ArrayList<>();
     }
 
@@ -113,6 +113,9 @@ public class Processor {
             Fairy fairy = new Fairy(texture, data[pop()], x * 16, y * 16, 16, 16);
             fairies.add(fairy);
             System.out.println("INFO: Fairy added: " + fairy.name + " at " + x + ", " + y);
+        } else if (instruction.equals("texture")) {
+            int a = pop();
+            texture = new Texture(data[a]);
         }
         return false;
     }

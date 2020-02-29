@@ -24,15 +24,11 @@ public class Game extends ApplicationAdapter {
 	public void create () {
 		batch = new SpriteBatch();
 
-		// 材质加载
-		cosmeticsTexture = new Texture("hinchin.cosmetics.png");
-
 		// 时间
 		lastInstant = System.currentTimeMillis();
 
-		Processor cosmeticProcessor = new Processor(Gdx.files.internal("cosmetics.hc").file(), 512, cosmeticsTexture);
-		cosmeticProcessor.run();
-		cosmetics = cosmeticProcessor.fairies;
+		cosmetics = loadFairies(Gdx.files.internal("cosmetics.hc").file());
+		terrains = loadFairies(Gdx.files.internal("terrain.hc").file());
 	}
 
 	/**
@@ -59,6 +55,7 @@ public class Game extends ApplicationAdapter {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		// 开始绘画材质
 		batch.begin();
+		terrains.get(0).draw(batch, 10.0f, 10.0f, 2.0f);
 		cosmetics.get(1).draw(batch, 10.0f, 10.0f, 2.0f);
 		batch.end();
 	}
@@ -68,9 +65,18 @@ public class Game extends ApplicationAdapter {
 	 * 包括把材质扔掉，模型扔掉啥的。
 	 */
 	@Override
-	public void dispose () {
+	public void dispose() {
 		batch.dispose();
-		cosmeticsTexture.dispose();
+	}
+
+	/**
+	 * 大规模加载小贴图。
+	 * @param file 文件
+	 */
+	private ArrayList<Fairy> loadFairies(File file) {
+		Processor processor = new Processor(file, 512);
+		processor.run();
+		return processor.fairies;
 	}
 
 	// deltaTime 是每一帧和上一帧的时差。这样可以保证不稳定的 FPS 下游戏一样正常运行。单位是秒。
@@ -79,7 +85,6 @@ public class Game extends ApplicationAdapter {
 	private long lastInstant;
 	SpriteBatch batch;
 	// 人，动物等
-	Texture cosmeticsTexture;
 	ArrayList<Fairy> cosmetics;
-
+	ArrayList<Fairy> terrains;
 }

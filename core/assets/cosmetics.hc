@@ -1,4 +1,7 @@
 #label-manual-ids-to-texture-so-that-stuffs-could-be-massively-generated
+data 511 hinchin.cosmetics.png #reserved
+push 511
+texture
 data 0 man
 push 0
 push 0 push 0
