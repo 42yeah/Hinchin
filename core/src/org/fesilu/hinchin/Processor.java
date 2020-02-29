@@ -166,8 +166,15 @@ public class Processor {
             data[index] = "" + a;
         } else if (instruction.equals("load")) {
             int index = (int) toNumber(fetch());
-            float a = Float.parseFloat(data[index]);
+            String value = data[index];
+            if (value == null) {
+                System.err.println("ERR! loading in " + counter + " will result in a NullPointerException!");
+            }
+            float a = Float.parseFloat(value);
             pushf(a);
+        } else if (instruction.equals("sps")) {
+            // SPS = Set Player Pos
+
         }
         return false;
     }
