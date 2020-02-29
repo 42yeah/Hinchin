@@ -35,13 +35,25 @@ public class Entity {
         position.add(deltaPos.scl(0.1f));
     }
 
+    public Vector2 getPosition() {
+        return position;
+    }
+
+    public Vector2 getSnatch() {
+        return snatch;
+    }
+
+    public void setSnatch(Vector2 snatch) {
+        this.snatch = snatch;
+    }
+
     private Fairy fairy;
 
     // 连续坐标，因为我们要顺滑移动
     private Vector2 position;
 
     // 卡着的位置，因为我们是格子游戏
-    public Vector2 snatch;
+    private Vector2 snatch;
 
     // 贴图大小，按像素算
     private Vector2 size;

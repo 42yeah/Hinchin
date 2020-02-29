@@ -35,7 +35,7 @@ public class Game extends ApplicationAdapter {
 		// 初始化玩家和实体列表
 		entities = new ArrayList<>();
 		playerCharacter = new Entity(new Vector2(0.0f, 0.0f), cosmetics.get("man"), 2.0f);
-		playerCharacter.snatch = new Vector2(1.0f, 0.0f);
+		playerCharacter.setSnatch(new Vector2(1.0f, 0.0f));
 		entities.add(playerCharacter);
 
 		// 运行初试 Hinchin 脚本
