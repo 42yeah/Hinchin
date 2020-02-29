@@ -58,9 +58,9 @@ public class Game extends ApplicationAdapter {
 		lastInstant = thisInstant;
 
 		// 更新怪物
-		for (int i = 0; i < entities.size(); i++) {
-			entities.get(i).update(deltaTime);
-		}
+			for (int i = 0; i < entities.size(); i++) {
+				entities.get(i).update(deltaTime);
+			}
 	}
 
 	/**
@@ -70,8 +70,8 @@ public class Game extends ApplicationAdapter {
 	@Override
 	public void render() {
 		// 更新游戏
-		update();
 		updatePlayerCharacter();
+		update();
 
 		// 清除屏幕
 		Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -85,7 +85,7 @@ public class Game extends ApplicationAdapter {
 			}
 		}
 		for (int i = 0; i < entities.size(); i++) {
-			entities.get(i).draw(batch);
+				entities.get(i).draw(batch);
 		}
 		batch.end();
 	}
@@ -115,27 +115,31 @@ public class Game extends ApplicationAdapter {
 	 */
 	void updatePlayerCharacter() {
 		if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
-			if (!(map[(int)playerCharacter.getSnatch().y]
-					 [(int)playerCharacter.getSnatch().x].isObstacle())) {
 				playerCharacter.getSnatch().add(0, 1.0f);
+			if (map[(int)playerCharacter.getSnatch().y]
+					[(int)playerCharacter.getSnatch().x].isObstacle()) {
+				playerCharacter.getSnatch().sub(0, 1.0f);
 			}
 		}
 		if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {
-			if (!(map[(int)playerCharacter.getSnatch().y]
-					[(int)playerCharacter.getSnatch().x].isObstacle())) {
 				playerCharacter.getSnatch().add(0, -1.0f);
+			if (map[(int)playerCharacter.getSnatch().y]
+					[(int)playerCharacter.getSnatch().x].isObstacle()) {
+				playerCharacter.getSnatch().sub(0, -1.0f);
 			}
 		}
 		if (Gdx.input.isKeyJustPressed(Input.Keys.A)) {
-			if (!(map[(int)playerCharacter.getSnatch().y]
-					[(int)playerCharacter.getSnatch().x].isObstacle())) {
 				playerCharacter.getSnatch().add(-1.0f, 0);
+			if (map[(int)playerCharacter.getSnatch().y]
+					[(int)playerCharacter.getSnatch().x].isObstacle()) {
+				playerCharacter.getSnatch().sub(-1.0f, 0);
 			}
 		}
 		if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
-			if (!(map[(int)playerCharacter.getSnatch().y]
-					[(int)playerCharacter.getSnatch().x].isObstacle())) {
 				playerCharacter.getSnatch().add(1.0f, 0);
+			if (map[(int)playerCharacter.getSnatch().y]
+					[(int)playerCharacter.getSnatch().x].isObstacle()) {
+				playerCharacter.getSnatch().sub(1.0f, 0);
 			}
 		}
 	}
