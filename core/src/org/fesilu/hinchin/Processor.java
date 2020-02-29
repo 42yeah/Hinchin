@@ -3,6 +3,7 @@ package org.fesilu.hinchin;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector2;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -136,6 +137,8 @@ public class Processor {
             if (result) {
                 counter += toNumber(fetch());
             }
+        } else if (instruction.startsWith("j")) {
+            counter += toNumber(fetch());
         } else if (instruction.equals("clone")) {
             float a = popf();
             pushf(a);
@@ -153,6 +156,18 @@ public class Processor {
         } else if (instruction.equals("texture")) {
             int a = pop();
             texture = new Texture(data[a]);
+        } else if (instruction.equals("perlin")) {
+            float y = popf(), x = popf();
+            float p = Generator.perlin(new Vector2(x, y));
+            pushf(p);
+        } else if (instruction.equals("store")) {
+            int index = (int) toNumber(fetch());
+            float a = popf();
+            data[index] = "" + a;
+        } else if (instruction.equals("load")) {
+            int index = (int) toNumber(fetch());
+            float a = Float.parseFloat(data[index]);
+            pushf(a);
         }
         return false;
     }
@@ -177,7 +192,7 @@ public class Processor {
      */
     private int pop() {
         if (pointer >= memory.length || pointer < 0) {
-            System.err.println("WARNING! Pointer is overflowing / underflowing");
+            System.err.println("WARNING! Pointer is underflowing at " + counter);
             return 0;
         }
         int ret = (int) memory[pointer];
@@ -191,7 +206,7 @@ public class Processor {
      */
     private float popf() {
         if (pointer >= memory.length || pointer < 0) {
-            System.err.println("WARNING! Pointer is overflowing / underflowing");
+            System.err.println("WARNING! Pointer is underflowing at " + counter);
             return 0;
         }
         float ret = memory[pointer];
@@ -202,7 +217,7 @@ public class Processor {
     public void push(int value) {
         pointer++;
         if (pointer >= memory.length || pointer < 0) {
-            System.err.println("WARNING! Pointer is overflowing / underflowing");
+            System.err.println("WARNING! Pointer is overflowing at " + counter);
             return;
         }
         memory[pointer] = value;
@@ -211,7 +226,7 @@ public class Processor {
     public void pushf(float value) {
         pointer++;
         if (pointer >= memory.length || pointer < 0) {
-            System.err.println("WARNING! Pointer is overflowing / underflowing");
+            System.err.println("WARNING! Pointer is overflowing at " + counter);
             return;
         }
         memory[pointer] = value;
