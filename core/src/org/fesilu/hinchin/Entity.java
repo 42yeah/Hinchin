@@ -15,7 +15,6 @@ public class Entity {
         snatch = new Vector2(0.0f, 0.0f);
         size = new Vector2(this.fairy.sw, this.fairy.sh);
         size.scl(scale);
-        System.out.println(snatch);
     }
 
     /**

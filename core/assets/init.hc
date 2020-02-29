@@ -1,3 +1,3 @@
-#initializes the game
+#initializes-the-game
 push 0
 end

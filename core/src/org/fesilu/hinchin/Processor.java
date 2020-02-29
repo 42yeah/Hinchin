@@ -91,16 +91,40 @@ public class Processor {
             int a = pop();
             System.out.println("INFO: SayData at " + pointer + ": " + data[a]);
         } else if (instruction.equals("cmp")) {
-            int a = pop(), b = pop();
-            push(a == b ? 1 : 0);
+            int b = pop(), a = pop();
+            int res = 0;
+            if (a > b) {
+                res = 1;
+            } else if (a < b) {
+                res = -1;
+            }
+            push(res);
         } else if (instruction.equals("je")) {
             int a = pop();
-            if (a == 1) {
+            if (a == 0) {
                 counter += toNumber(fetch());
             }
         } else if (instruction.equals("jne")) {
             int a = pop();
-            if (a == 0) {
+            if (a != 0) {
+                counter += toNumber(fetch());
+            }
+        } else if (instruction.startsWith("jg")) {
+            int a = pop();
+            boolean result = a > 0;
+            if (instruction.endsWith("e")) {
+                result = a >= 0;
+            }
+            if (result) {
+                counter += toNumber(fetch());
+            }
+        } else if (instruction.startsWith("jl")) {
+            int a = pop();
+            boolean result = a < 0;
+            if (instruction.endsWith("e")) {
+                result = a <= 0;
+            }
+            if (result) {
                 counter += toNumber(fetch());
             }
         } else if (instruction.equals("clone")) {

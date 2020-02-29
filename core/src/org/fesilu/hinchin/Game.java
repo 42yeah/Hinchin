@@ -38,6 +38,14 @@ public class Game extends ApplicationAdapter {
 		playerCharacter.setSnatch(new Vector2(1.0f, 0.0f));
 		entities.add(playerCharacter);
 
+		// 测试地图
+		map = new Terrain[80][100]; // 100x80 的地图
+		for (int y = 0; y < 80; y++) {
+			for (int x = 0; x < 100; x++) {
+				map[y][x] = new Terrain(new Vector2(x, y), terrains.get("grass"), 2.0f);
+			}
+		}
+
 		// 运行初试 Hinchin 脚本
 		Processor processor = new Processor(Gdx.files.internal("init.hc").file(), 512, this);
 		processor.run();
@@ -74,6 +82,11 @@ public class Game extends ApplicationAdapter {
 
 		// 开始绘画材质
 		batch.begin();
+		for (int y = 0; y < 80; y++) {
+			for (int x = 0; x < 100; x++) {
+				map[y][x].draw(batch);
+			}
+		}
 		for (int i = 0; i < entities.size(); i++) {
 			entities.get(i).draw(batch);
 		}
@@ -112,4 +125,5 @@ public class Game extends ApplicationAdapter {
 	HashMap<String, Fairy> terrains;
 	ArrayList<Entity> entities;
 	Entity playerCharacter;
+	Terrain[][] map;
 }
