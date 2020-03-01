@@ -161,6 +161,7 @@ public class Game extends ApplicationAdapter {
 	void doChangeMap() {
 		if (comparedDownstairs()) {
 			canChange = false;
+			mapList.add(map);
 			map = Generator.generate(this, new Processor(Gdx.files.internal("island_gen.hc").file(), 512), 100, 80);
 			floorCounter += 1;
 		}
@@ -197,4 +198,5 @@ public class Game extends ApplicationAdapter {
 
 	int floorCounter;
 	boolean canChange = true;
+	ArrayList<GameMap> mapList = new ArrayList<>();
 }
