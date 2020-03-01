@@ -81,16 +81,18 @@ public class Generator {
         return a.cpy().scl(1.0f - v, 1.0f - v).add(b.cpy().scl(v, v));
     }
 
-    public static Terrain[][] generate(Processor processor, HashMap<String, Fairy> fairies, int w, int h) {
-        Terrain[][] map = new Terrain[h][w];
+    public static GameMap generate(Game game, Processor processor, int w, int h) {
+        GameMap map = new GameMap(game, new Vector2(w, h));
+        map.entities.add(game.playerCharacter);
+        processor.attach(map);
         for (int y = 0; y < h; y++) {
             for (int x = 0; x < w; x++) {
                 processor.reset();
                 processor.pushf((float) x / w);
                 processor.pushf((float) y / h);
                 processor.run();
-                Fairy fairy = fairies.get(processor.getData()[0]);
-                map[y][x] = new Terrain(new Vector2(x, y), fairy.obstacle, fairy, 2.0f);
+                Fairy fairy = game.terrains.get(processor.getData()[0]);
+                map.map[y][x] = new Terrain(new Vector2(x, y), fairy.obstacle, fairy, 2.0f);
             }
         }
         return map;

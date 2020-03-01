@@ -37,7 +37,6 @@ public class Processor {
 
         // 用于贴图读取脚本
         fairies = new HashMap<>();
-        this.game = game;
     }
 
     /**
@@ -179,7 +178,7 @@ public class Processor {
         } else if (instruction.equals("sps")) {
             // SPS = Set Player Pos
             int y = pop(), x = pop();
-            game.playerCharacter.setSnatch(new Vector2(x, y));
+            ((Game) attachment).playerCharacter.setSnatch(new Vector2(x, y));
         } else if (instruction.equals("abs")) {
             float a = popf();
             a = Math.abs(a);
@@ -193,6 +192,13 @@ public class Processor {
         } else if (instruction.equals("len")) {
             float a = popf(), b = popf();
             pushf((float) Math.sqrt(a * a + b * b));
+        } else if (instruction.equals("plant")) {
+            float y = popf(), x = popf();
+            int index = pop();
+            GameMap map = (GameMap) attachment;
+            int sx = (int) (x * map.mapSize.x);
+            int sy = (int) (y * map.mapSize.y);
+            map.entities.add(new Entity(new Vector2(sx, sy), map.game.cosmetics.get(data[index]), 2.0f));
         }
         return false;
     }
@@ -284,6 +290,15 @@ public class Processor {
     }
 
     /**
+     * 接入某物体到 attach 中。
+     * 可以自由操控 attach 中的物体。
+     * @param object
+     */
+    public void attach(Object object) {
+        this.attachment = object;
+    }
+
+    /**
      * 程序重置。
      */
     public void reset() {
@@ -318,5 +333,5 @@ public class Processor {
 
     public HashMap<String, Fairy> fairies;
     private Texture texture;
-    private Game game;
+    private Object attachment;
 }

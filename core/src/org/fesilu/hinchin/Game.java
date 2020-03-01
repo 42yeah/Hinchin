@@ -35,21 +35,21 @@ public class Game extends ApplicationAdapter {
 		terrains = loadFairies(Gdx.files.internal("terrain.hc").file());
 
 		// 初始化玩家和实体列表
-		entities = new ArrayList<>();
 		playerCharacter = new Entity(new Vector2(0.0f, 0.0f), cosmetics.get("man"), 2.0f);
 		playerCharacter.setSnatch(new Vector2(0.0f, 0.0f));
-		entities.add(playerCharacter);
 
 		// 摄像头
 		float aspect = (float) Gdx.graphics.getWidth() / Gdx.graphics.getHeight();
 		camera = new OrthographicCamera(500.0f * aspect, 500.0f);
 
 		// 测试地图
-		map = Generator.generate(new Processor(Gdx.files.internal("island_gen.hc").file(), 512, null), terrains, 100, 80);
+		map = Generator.generate(this, new Processor(Gdx.files.internal("island_gen.hc").file(), 512, null), 100, 80);
 
 		// 运行初试 Hinchin 脚本
-		Processor processor = new Processor(Gdx.files.internal("init.hc").file(), 512, this);
-		processor.run();
+		Processor initiator = new Processor(Gdx.files.internal("init.hc").file(), 512, this);
+		initiator.attach(this);
+		initiator.run();
+		playerCharacter.immediatelyJump();
 	}
 
 	/**
@@ -66,8 +66,8 @@ public class Game extends ApplicationAdapter {
 		camera.position.set(playerCharacter.getPosition().x * 2.0f, playerCharacter.getPosition().y * 2.0f, 0.01f);
 
 		// 更新怪物
-		for (int i = 0; i < entities.size(); i++) {
-			entities.get(i).update(deltaTime);
+		for (int i = 0; i < map.entities.size(); i++) {
+			map.entities.get(i).update(deltaTime);
 		}
 	}
 
@@ -89,13 +89,13 @@ public class Game extends ApplicationAdapter {
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
-		for (int y = 0; y < 80; y++) {
-			for (int x = 0; x < 100; x++) {
-				map[y][x].draw(batch);
+		for (int y = 0; y < map.mapSize.y; y++) {
+			for (int x = 0; x < map.mapSize.x; x++) {
+				map.map[y][x].draw(batch);
 			}
 		}
-		for (int i = 0; i < entities.size(); i++) {
-			entities.get(i).draw(batch);
+		for (int i = 0; i < map.entities.size(); i++) {
+			map.entities.get(i).draw(batch);
 		}
 		Vector2 snatch = playerCharacter.getSnatch().cpy().scl(cosmetics.get("man").sw, cosmetics.get("man").sh);
 		cosmetics.get("grass-hat").draw(batch, playerCharacter.getPosition().x, playerCharacter.getPosition().y, 2.0f);
@@ -129,28 +129,28 @@ public class Game extends ApplicationAdapter {
 	void updatePlayerCharacter() {
 		if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
 				playerCharacter.getSnatch().add(0, 1.0f);
-			if (map[(int)playerCharacter.getSnatch().y]
+			if (map.map[(int)playerCharacter.getSnatch().y]
 					[(int)playerCharacter.getSnatch().x].isObstacle()) {
 				playerCharacter.getSnatch().sub(0, 1.0f);
 			}
 		}
 		if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {
 				playerCharacter.getSnatch().add(0, -1.0f);
-			if (map[(int)playerCharacter.getSnatch().y]
+			if (map.map[(int)playerCharacter.getSnatch().y]
 					[(int)playerCharacter.getSnatch().x].isObstacle()) {
 				playerCharacter.getSnatch().sub(0, -1.0f);
 			}
 		}
 		if (Gdx.input.isKeyJustPressed(Input.Keys.A)) {
 				playerCharacter.getSnatch().add(-1.0f, 0);
-			if (map[(int)playerCharacter.getSnatch().y]
+			if (map.map[(int)playerCharacter.getSnatch().y]
 					[(int)playerCharacter.getSnatch().x].isObstacle()) {
 				playerCharacter.getSnatch().sub(-1.0f, 0);
 			}
 		}
 		if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
 				playerCharacter.getSnatch().add(1.0f, 0);
-			if (map[(int)playerCharacter.getSnatch().y]
+			if (map.map[(int)playerCharacter.getSnatch().y]
 					[(int)playerCharacter.getSnatch().x].isObstacle()) {
 				playerCharacter.getSnatch().sub(1.0f, 0);
 			}
@@ -168,9 +168,8 @@ public class Game extends ApplicationAdapter {
 	// 因为在同一个包内，这些是 Processor (脚本) 可以访问的东西
 	HashMap<String, Fairy> cosmetics;
 	HashMap<String, Fairy> terrains;
-	ArrayList<Entity> entities;
 	Entity playerCharacter;
-	Terrain[][] map;
+	GameMap map;
 
 	// 摄像头，跟着主角动
 	OrthographicCamera camera;

@@ -7,14 +7,14 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Entity {
     public Entity() {}
-    public Entity(Vector2 position, Fairy fairy, float scale) {
+    public Entity(Vector2 snatch, Fairy fairy, float scale) {
         this.fairy = fairy;
-        this.position = position;
+        this.snatch = snatch;
         this.scale = scale;
 
-        snatch = new Vector2(0.0f, 0.0f);
         size = new Vector2(this.fairy.sw, this.fairy.sh);
         size.scl(scale);
+        this.position = new Vector2(snatch.cpy().scl(size.cpy().scl(0.5f)));
     }
 
     /**
@@ -31,7 +31,11 @@ public class Entity {
      */
     public void update(float deltaTime) {
         Vector2 deltaPos = snatch.cpy().scl(size.cpy().scl(0.5f)).sub(position);
-        position.add(deltaPos.scl(0.2f));
+        position.add(deltaPos.scl(0.1f));
+    }
+
+    public void immediatelyJump() {
+        position = snatch.cpy().scl(size.cpy().scl(0.5f));
     }
 
     public Vector2 getPosition() {
