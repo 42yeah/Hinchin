@@ -198,8 +198,8 @@ public class Processor {
             float y = popf(), x = popf();
             int index = pop();
             GameMap map = (GameMap) attachment;
-            int sx = (int) (x * map.mapSize.x);
-            int sy = (int) (y * map.mapSize.y);
+            int sx = (int) Math.round(x * map.mapSize.x);
+            int sy = (int) Math.round(y * map.mapSize.y);
             map.entities.add(new Entity(new Vector2(sx, sy), map.game.cosmetics.get(data[index]), 2.0f));
         } else if (instruction.equals("rnd")) {
             float gen = Generator.getRng().nextFloat();
