@@ -7,6 +7,7 @@ fairy 1 2 0 wall
 fairy 0 0 1 floor
 fairy 0 1 1 lava
 fairy 0 2 0 ice
-fairy 0 0 3 sand
+fairy 0 0 2 sand
+fairy 0 1 2 door
 push 0
 end
