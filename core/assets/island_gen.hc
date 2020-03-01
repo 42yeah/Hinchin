@@ -1,7 +1,7 @@
 store 1 #y
-push 2
+push 5
 mul
-push 2
+push 5
 load 1
 mul
 perlin

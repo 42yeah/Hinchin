@@ -45,7 +45,7 @@ public class Game extends ApplicationAdapter {
 		camera = new OrthographicCamera(500.0f * aspect, 500.0f);
 
 		// 测试地图
-		map = Generator.generate(new Processor(Gdx.files.internal("island_gen.hc").file(), 512, null), terrains, 10, 10);
+		map = Generator.generate(new Processor(Gdx.files.internal("island_gen.hc").file(), 512, null), terrains, 100, 80);
 
 		// 运行初试 Hinchin 脚本
 		Processor processor = new Processor(Gdx.files.internal("init.hc").file(), 512, this);
@@ -63,7 +63,7 @@ public class Game extends ApplicationAdapter {
 		lastInstant = thisInstant;
 
 		// 更新摄像头位置
-		camera.position.set(playerCharacter.getPosition().x, playerCharacter.getPosition().y, 0.01f);
+		camera.position.set(playerCharacter.getPosition().x * 2.0f, playerCharacter.getPosition().y * 2.0f, 0.01f);
 
 		// 更新怪物
 		for (int i = 0; i < entities.size(); i++) {
@@ -89,8 +89,8 @@ public class Game extends ApplicationAdapter {
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
-		for (int y = 0; y < 10; y++) {
-			for (int x = 0; x < 10; x++) {
+		for (int y = 0; y < 80; y++) {
+			for (int x = 0; x < 100; x++) {
 				map[y][x].draw(batch);
 			}
 		}

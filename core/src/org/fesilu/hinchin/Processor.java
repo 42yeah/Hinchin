@@ -174,7 +174,8 @@ public class Processor {
             pushf(a);
         } else if (instruction.equals("sps")) {
             // SPS = Set Player Pos
-
+            int y = pop(), x = pop();
+            game.playerCharacter.setSnatch(new Vector2(x, y));
         }
         return false;
     }
