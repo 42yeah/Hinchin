@@ -7,15 +7,25 @@ push 10
 load 1
 mul
 perlin #value
+clone sayl
 push 0.5
 load 2 nml load 1 nml len push 1.0 mul nml #normalize(len((x,y))*1.0)
 sub
+clone sayl
 cmpf
-jg 24
+clone sayl
+el
+jg !place-sea
 data 0 grass
-rnd push 0.98 cmpf jl 13 #if(rnd>0.5)
+load 4 push 0 cmp jne !plant-tree
+    data 3 downstairs push 3 load 2 load 1 plant
+    push 1 store 4
+j !ret
+plant-tree
+rnd push 0.98 cmpf jl !ret #if(rnd>0.5)
 data 3 tree push 3 load 2 load 1 plant #plant(tree,x,y)
-j 4
-data 0 sea
+j !ret
+place-sea data 0 sea
+ret
 push 0
 end

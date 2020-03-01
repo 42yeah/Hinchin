@@ -115,12 +115,12 @@ public class Processor {
         } else if (instruction.equals("je")) {
             int a = pop();
             if (a == 0) {
-                counter += toNumber(fetch());
+                counter = locate(fetch());
             }
         } else if (instruction.equals("jne")) {
             int a = pop();
             if (a != 0) {
-                counter += toNumber(fetch());
+                counter = locate(fetch());
             }
         } else if (instruction.startsWith("jg")) {
             int a = pop();
@@ -129,7 +129,9 @@ public class Processor {
                 result = a >= 0;
             }
             if (result) {
-                counter += toNumber(fetch());
+                String tag = fetch();
+                System.out.println(tag + ", " + locate(tag));
+                counter = locate(tag);
             }
         } else if (instruction.startsWith("jl")) {
             int a = pop();
@@ -138,10 +140,10 @@ public class Processor {
                 result = a <= 0;
             }
             if (result) {
-                counter += toNumber(fetch());
+                counter = locate(fetch());
             }
         } else if (instruction.startsWith("j")) {
-            counter += toNumber(fetch());
+            counter = locate(fetch());
         } else if (instruction.equals("clone")) {
             float a = popf();
             pushf(a);
@@ -171,10 +173,11 @@ public class Processor {
             int index = (int) toNumber(fetch());
             String value = data[index];
             if (value == null) {
-                System.err.println("ERR! loading in " + counter + " will result in a NullPointerException!");
+                pushf(0.0f);
+            } else {
+                float a = Float.parseFloat(value);
+                pushf(a);
             }
-            float a = Float.parseFloat(value);
-            pushf(a);
         } else if (instruction.equals("sps")) {
             // SPS = Set Player Pos
             int y = pop(), x = pop();
@@ -264,6 +267,16 @@ public class Processor {
             return;
         }
         memory[pointer] = value;
+    }
+
+    public int locate(String key) {
+        for (int i = 0; i < instructions.length; i++) {
+            if (instructions[i].equals(key.substring(1))) {
+                return i + 1;
+            }
+        }
+        System.err.println("ERROR! Jump point not found!");
+        return 0;
     }
 
     /**
