@@ -153,8 +153,9 @@ public class Processor {
             counter = waypoint;
         } else if (instruction.equals("fairy")) {
             int fairySize = 16;
-            int y = pop(), x = pop();
-            Fairy fairy = new Fairy(texture, data[pop()], x * 16, y * 16, 16, 16, pop() == 1);
+            boolean obstacle = (int) toNumber(fetch()) == 1;
+            int x = (int) toNumber(fetch()), y = (int) toNumber(fetch());
+            Fairy fairy = new Fairy(texture, fetch(), x * 16, y * 16, 16, 16, obstacle);
             fairies.put(fairy.name, fairy);
             System.out.println("INFO: Fairy added: " + fairy.name + " at " + x + ", " + y);
         } else if (instruction.equals("texture")) {
