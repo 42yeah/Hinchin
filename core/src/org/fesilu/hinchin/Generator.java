@@ -91,6 +91,9 @@ public class Generator {
                 processor.pushf((float) x / w);
                 processor.pushf((float) y / h);
                 processor.run();
+                if (map.map[y][x] != null) {
+                    continue;
+                }
                 Fairy fairy = game.terrains.get(processor.getData()[0]);
                 map.map[y][x] = new Terrain(new Vector2(x, y), fairy.obstacle, fairy, 2.0f);
             }
@@ -107,7 +110,7 @@ public class Generator {
                 processor.push(inDoors ? 1 : 0);
                 processor.run();
                 Fairy fairy = map.game.terrains.get(processor.getData()[0]);
-                map.map[y][x] = new Terrain(new Vector2(x + a, y + b), fairy.obstacle, fairy, 2.0f);
+                map.map[y + b][x + a] = new Terrain(new Vector2(x + a, y + b), fairy.obstacle, fairy, 2.0f);
             }
         }
     }

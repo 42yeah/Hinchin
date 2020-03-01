@@ -161,7 +161,7 @@ public class Game extends ApplicationAdapter {
 	void doChangeMap() {
 		if (comparedDownstairs()) {
 			canChange = false;
-			map = Generator.generate(this, new Processor(Gdx.files.internal("island_gen.hc").file(), 512, null), 100, 80);
+			map = Generator.generate(this, new Processor(Gdx.files.internal("island_gen.hc").file(), 512), 100, 80);
 			floorCounter += 1;
 		}
 	}
@@ -195,7 +195,6 @@ public class Game extends ApplicationAdapter {
 	// 摄像头，跟着主角动
 	OrthographicCamera camera;
 
-
 	int floorCounter;
-	Boolean canChange = true;
+	boolean canChange = true;
 }
