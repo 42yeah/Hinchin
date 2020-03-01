@@ -127,33 +127,22 @@ public class Game extends ApplicationAdapter {
 	 * 挪动角色。
 	 */
 	void updatePlayerCharacter() {
+		Vector2 oldSnatch = playerCharacter.getSnatch().cpy();
 		if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
 				playerCharacter.getSnatch().add(0, 1.0f);
-			if (map.map[(int)playerCharacter.getSnatch().y]
-					[(int)playerCharacter.getSnatch().x].isObstacle()) {
-				playerCharacter.getSnatch().sub(0, 1.0f);
-			}
 		}
 		if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {
 				playerCharacter.getSnatch().add(0, -1.0f);
-			if (map.map[(int)playerCharacter.getSnatch().y]
-					[(int)playerCharacter.getSnatch().x].isObstacle()) {
-				playerCharacter.getSnatch().sub(0, -1.0f);
-			}
 		}
 		if (Gdx.input.isKeyJustPressed(Input.Keys.A)) {
 				playerCharacter.getSnatch().add(-1.0f, 0);
-			if (map.map[(int)playerCharacter.getSnatch().y]
-					[(int)playerCharacter.getSnatch().x].isObstacle()) {
-				playerCharacter.getSnatch().sub(-1.0f, 0);
-			}
 		}
 		if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
 				playerCharacter.getSnatch().add(1.0f, 0);
-			if (map.map[(int)playerCharacter.getSnatch().y]
-					[(int)playerCharacter.getSnatch().x].isObstacle()) {
-				playerCharacter.getSnatch().sub(1.0f, 0);
-			}
+		}
+		if (map.map[(int)playerCharacter.getSnatch().y]
+				[(int)playerCharacter.getSnatch().x].isObstacle()) {
+			playerCharacter.setSnatch(oldSnatch);
 		}
 	}
 

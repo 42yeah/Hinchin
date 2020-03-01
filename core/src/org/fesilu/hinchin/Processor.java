@@ -199,6 +199,9 @@ public class Processor {
             int sx = (int) (x * map.mapSize.x);
             int sy = (int) (y * map.mapSize.y);
             map.entities.add(new Entity(new Vector2(sx, sy), map.game.cosmetics.get(data[index]), 2.0f));
+        } else if (instruction.equals("rnd")) {
+            float gen = Generator.getRng().nextFloat();
+            pushf(gen);
         }
         return false;
     }
