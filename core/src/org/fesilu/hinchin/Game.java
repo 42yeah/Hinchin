@@ -79,6 +79,7 @@ public class Game extends ApplicationAdapter {
 	public void render() {
 		// 更新游戏
 		updatePlayerCharacter();
+		changeMap(canChange);
 		update();
 
 		// 清除屏幕
@@ -144,6 +145,37 @@ public class Game extends ApplicationAdapter {
 				[(int)playerCharacter.getSnatch().x].isObstacle()) {
 			playerCharacter.setSnatch(oldSnatch);
 		}
+		if (!(comparedDownstairs())) {
+			canChange = true;
+		}
+
+	}
+
+	void changeMap(Boolean canChange) {
+		if (canChange) {
+			doChangeMap();
+//			this.canChange = true;
+		}
+	}
+
+	void doChangeMap() {
+		if (comparedDownstairs()) {
+			canChange = false;
+			map = Generator.generate(this, new Processor(Gdx.files.internal("island_gen.hc").file(), 512, null), 100, 80);
+			floorCounter += 1;
+		}
+	}
+
+	Boolean comparedDownstairs() {
+		Boolean a = false;
+		for (int i = 0; i < map.entities.size(); i++) {
+			if (map.entities.get(i).getName().equals("downstairs")) {
+				if (map.entities.get(i).getSnatch().equals(playerCharacter.getSnatch())) {
+					a = true;
+				}
+			}
+		}
+		return a;
 	}
 
 	// deltaTime 是每一帧和上一帧的时差。这样可以保证不稳定的 FPS 下游戏一样正常运行。单位是秒。
@@ -162,4 +194,8 @@ public class Game extends ApplicationAdapter {
 
 	// 摄像头，跟着主角动
 	OrthographicCamera camera;
+
+
+	int floorCounter;
+	Boolean canChange = true;
 }
