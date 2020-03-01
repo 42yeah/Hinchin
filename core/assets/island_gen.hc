@@ -21,8 +21,10 @@ load 4 push 0 cmp jne !plant-tree
     push 1 store 4
 j !ret
 plant-tree
-    rnd push 0.98 cmpf jl !ret #if(rnd>0.5)
-    data 3 tree push 3 load 2 load 1 plant #plant(tree,x,y)
+    rnd push 0.98 cmpf jl !ret #if(rnd>0.02)
+    load 2 load 1 rnd push 0.5 mul clone sayl rnd push 0.5 mul clone sayl el #xywh
+    room temple_room.hc
+    #data #3 #tree #push #3 #load #2 #load #1 #plant #plant(tree,x,y)
     j !ret
 place-sea
     data 0 sea

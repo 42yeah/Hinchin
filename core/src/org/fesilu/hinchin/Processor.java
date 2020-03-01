@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 
+import java.awt.image.ImageProducer;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,9 +25,8 @@ public class Processor {
      * texture 可以为空；这个只是 fairy 初值。
      * @param file 文件
      * @param reserve 内存大小 （以 int 算）
-     * @param game 游戏，可传可不传。可以传就可以操控游戏的各种数据。
      */
-    public Processor(File file, int reserve, Game game) {
+    public Processor(File file, int reserve) {
         // 读取指令
         instructions = readOrDie(file).trim().toLowerCase().split("[\\s\\n]");
         counter = 0;
@@ -205,6 +205,16 @@ public class Processor {
         } else if (instruction.equals("rnd")) {
             float gen = Generator.getRng().nextFloat();
             pushf(gen);
+        } else if (instruction.equals("room")) {
+            GameMap map = (GameMap) attachment;
+            int h = standarize(popf(), map.mapSize.y),
+                    w = standarize(popf(), map.mapSize.x),
+                    y = standarize(popf(), map.mapSize.y),
+                    x = standarize(popf(), map.mapSize.x);
+//            // 连续 Processor
+            Processor processor = new Processor(Gdx.files.internal(fetch()).file(), 512);
+            processor.attach(attachment);
+            Generator.placeRoom((GameMap) attachment, processor, x, y, w, h);
         }
         return false;
     }
@@ -277,6 +287,10 @@ public class Processor {
         }
         System.err.println("ERROR! Jump point not found!");
         return 0;
+    }
+
+    public int standarize(float x, float edge) {
+        return (int) Math.round(x * edge);
     }
 
     /**

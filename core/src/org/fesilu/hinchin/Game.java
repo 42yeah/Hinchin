@@ -43,10 +43,10 @@ public class Game extends ApplicationAdapter {
 		camera = new OrthographicCamera(500.0f * aspect, 500.0f);
 
 		// 测试地图
-		map = Generator.generate(this, new Processor(Gdx.files.internal("island_gen.hc").file(), 512, null), 100, 80);
+		map = Generator.generate(this, new Processor(Gdx.files.internal("island_gen.hc").file(), 512), 100, 80);
 
 		// 运行初试 Hinchin 脚本
-		Processor initiator = new Processor(Gdx.files.internal("init.hc").file(), 512, this);
+		Processor initiator = new Processor(Gdx.files.internal("init.hc").file(), 512);
 		initiator.attach(this);
 		initiator.run();
 		playerCharacter.immediatelyJump();
@@ -118,7 +118,7 @@ public class Game extends ApplicationAdapter {
 	 * @param file 文件
 	 */
 	private HashMap<String, Fairy> loadFairies(File file) {
-		Processor processor = new Processor(file, 512, null);
+		Processor processor = new Processor(file, 512);
 		processor.run();
 		return processor.fairies;
 	}

@@ -98,6 +98,20 @@ public class Generator {
         return map;
     }
 
+    public static void placeRoom(GameMap map, Processor processor, int x, int y, int w, int h) {
+        processor.attach(map);
+        for (int b = 0; b < h; b++) {
+            for (int a = 0; a < w; a++) {
+                processor.reset();
+                boolean inDoors = (a == 0 || b == 0 || a == w - 1 || b == h - 1);
+                processor.push(inDoors ? 1 : 0);
+                processor.run();
+                Fairy fairy = map.game.terrains.get(processor.getData()[0]);
+                map.map[y][x] = new Terrain(new Vector2(x + a, y + b), fairy.obstacle, fairy, 2.0f);
+            }
+        }
+    }
+
     /**
      * 获取 RNG，是单例模式。
      * @return 随机数生成器
