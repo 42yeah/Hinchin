@@ -1,8 +1,10 @@
 package org.fesilu.hinchin;
 
 import com.badlogic.gdx.math.Vector2;
+import sun.security.provider.NativePRNG;
 
 import java.util.HashMap;
+import java.util.Random;
 
 /**
  * Generator 是地图生成器，用来生成各种地图。
@@ -15,10 +17,11 @@ public class Generator {
      * @return hash 后坐标
      */
     public static Vector2 rand2d(Vector2 position) {
+        getRng();
         Vector2 cpy = position.cpy();
         Vector2 dotted = new Vector2(
-                cpy.cpy().dot(new Vector2(12.9898f, 78.233f)),
-                cpy.cpy().dot(new Vector2(42.523f, 117.625f))
+                cpy.cpy().dot(new Vector2(r1, r2)),
+                cpy.cpy().dot(new Vector2(r3, r4))
         );
         dotted.x = (float) Math.sin(dotted.x) * 42978.5253f;
         dotted.y = (float) Math.sin(dotted.y) * 42978.5253f;
@@ -92,4 +95,25 @@ public class Generator {
         }
         return map;
     }
+
+    /**
+     * 获取 RNG，是单例模式。
+     * @return 随机数生成器
+     */
+    public static Random getRng() {
+        if (rng == null) {
+            rng = new Random(System.currentTimeMillis());
+            r1 = rng.nextFloat() * 100.0f;
+            r2 = rng.nextFloat() * 100.0f;
+            r3 = rng.nextFloat() * 100.0f;
+            r4 = rng.nextFloat() * 100.0f;
+        }
+        return rng;
+    }
+
+    /**
+     * 随机数生成器。每一次运行都会有独特的种子，确保每次地图都有一点不一样
+     */
+    public static Random rng;
+    public static float r1, r2, r3, r4;
 }

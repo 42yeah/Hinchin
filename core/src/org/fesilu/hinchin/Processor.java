@@ -72,6 +72,10 @@ public class Processor {
             pushf(toNumber(fetch()));
         } else if (instruction.equals("say")) {
             System.out.println("INFO: Say at " + pointer + ": " + popf());
+        } else if (instruction.equals("sayl")) {
+            System.out.print(popf() + " ");
+        } else if (instruction.equals("el")) {
+            System.out.println();
         } else if (instruction.equals("add")) {
             float a = popf(), b = popf();
             pushf(a + b);
@@ -176,6 +180,19 @@ public class Processor {
             // SPS = Set Player Pos
             int y = pop(), x = pop();
             game.playerCharacter.setSnatch(new Vector2(x, y));
+        } else if (instruction.equals("abs")) {
+            float a = popf();
+            a = Math.abs(a);
+            pushf(a);
+        } else if (instruction.equals("nml")) {
+            float a = popf();
+            pushf(a * 2.0f - 1.0f);
+        } else if (instruction.equals("tel")) {
+            float a = popf();
+            pushf(a * 0.5f + 0.5f);
+        } else if (instruction.equals("len")) {
+            float a = popf(), b = popf();
+            pushf((float) Math.sqrt(a * a + b * b));
         }
         return false;
     }

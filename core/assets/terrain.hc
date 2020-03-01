@@ -2,7 +2,7 @@ data 511 hinchin.png #reserved
 push 511
 texture
 data 0 sea
-push 1
+push 0
 push 0
 push 0 push 0
 fairy

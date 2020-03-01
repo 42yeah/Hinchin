@@ -42,7 +42,7 @@ public class Game extends ApplicationAdapter {
 
 		// 摄像头
 		float aspect = (float) Gdx.graphics.getWidth() / Gdx.graphics.getHeight();
-		camera = new OrthographicCamera(500.0f * aspect, 500.0f);
+		camera = new OrthographicCamera(1500.0f * aspect, 1500.0f);
 
 		// 测试地图
 		map = Generator.generate(new Processor(Gdx.files.internal("island_gen.hc").file(), 512, null), terrains, 100, 80);
