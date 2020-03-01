@@ -22,6 +22,14 @@ public class Terrain {
     }
 
     /**
+     * 返回当前物体名字。
+     * @return 物体名字
+     */
+    public String getName() {
+        return fairy.name;
+    }
+
+    /**
      * 使用 batch 来渲染角色内的精灵。
      * @param batch SpriteBatch
      */

@@ -7,14 +7,10 @@ push 10
 load 1
 mul
 perlin #value
-clone sayl
 push 0.5
 load 2 nml load 1 nml len push 1.0 mul nml #normalize(len((x,y))*1.0)
 sub
-clone sayl
 cmpf
-clone sayl
-el
 jg !place-sea
 data 0 grass
 load 4 push 0 cmp jne !plant-tree

@@ -92,7 +92,6 @@ public class Generator {
                 processor.pushf((float) y / h);
                 processor.run();
                 Fairy fairy = game.terrains.get(processor.getData()[0]);
-                System.out.println("PLACING " + fairy.name);
                 map.map[y][x] = new Terrain(new Vector2(x, y), fairy.obstacle, fairy, 2.0f);
             }
         }

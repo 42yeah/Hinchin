@@ -130,7 +130,6 @@ public class Processor {
             }
             if (result) {
                 String tag = fetch();
-                System.out.println(tag + ", " + locate(tag));
                 counter = locate(tag);
             }
         } else if (instruction.startsWith("jl")) {
