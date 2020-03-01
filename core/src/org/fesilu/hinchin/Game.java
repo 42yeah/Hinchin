@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -39,6 +40,10 @@ public class Game extends ApplicationAdapter {
 		playerCharacter.setSnatch(new Vector2(0.0f, 0.0f));
 		entities.add(playerCharacter);
 
+		// 摄像头
+		float aspect = (float) Gdx.graphics.getWidth() / Gdx.graphics.getHeight();
+		camera = new OrthographicCamera(500.0f * aspect, 500.0f);
+
 		// 测试地图
 		map = Generator.generate(new Processor(Gdx.files.internal("island_gen.hc").file(), 512, null), terrains, 10, 10);
 
@@ -56,6 +61,9 @@ public class Game extends ApplicationAdapter {
 		long thisInstant = System.currentTimeMillis();
 		deltaTime = (float) (thisInstant - lastInstant) / 1000.0f;
 		lastInstant = thisInstant;
+
+		// 更新摄像头位置
+		camera.position.set(playerCharacter.getPosition().x, playerCharacter.getPosition().y, 0.01f);
 
 		// 更新怪物
 		for (int i = 0; i < entities.size(); i++) {
@@ -78,6 +86,8 @@ public class Game extends ApplicationAdapter {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		// 开始绘画材质
+		camera.update();
+		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 		for (int y = 0; y < 10; y++) {
 			for (int x = 0; x < 10; x++) {
@@ -160,4 +170,7 @@ public class Game extends ApplicationAdapter {
 	ArrayList<Entity> entities;
 	Entity playerCharacter;
 	Terrain[][] map;
+
+	// 摄像头，跟着主角动
+	OrthographicCamera camera;
 }
