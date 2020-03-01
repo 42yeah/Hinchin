@@ -37,5 +37,15 @@ push 0 #not-obstacle
 push 6
 push 0 push 2
 fairy
+data 7 axe
+push 0 #not-obstacle
+push 7
+push 1 push 2
+fairy
+data 8 grass-hat
+push 0 #not-obstacle
+push 8
+push 2 push 2
+fairy
 push 0
 end

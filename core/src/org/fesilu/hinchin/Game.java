@@ -42,7 +42,7 @@ public class Game extends ApplicationAdapter {
 
 		// 摄像头
 		float aspect = (float) Gdx.graphics.getWidth() / Gdx.graphics.getHeight();
-		camera = new OrthographicCamera(1500.0f * aspect, 1500.0f);
+		camera = new OrthographicCamera(500.0f * aspect, 500.0f);
 
 		// 测试地图
 		map = Generator.generate(new Processor(Gdx.files.internal("island_gen.hc").file(), 512, null), terrains, 100, 80);
@@ -98,7 +98,8 @@ public class Game extends ApplicationAdapter {
 			entities.get(i).draw(batch);
 		}
 		Vector2 snatch = playerCharacter.getSnatch().cpy().scl(cosmetics.get("man").sw, cosmetics.get("man").sh);
-		cosmetics.get("dog").draw(batch, snatch.x, snatch.y, 2.0f);
+		cosmetics.get("grass-hat").draw(batch, playerCharacter.getPosition().x, playerCharacter.getPosition().y, 2.0f);
+		cosmetics.get("axe").draw(batch, playerCharacter.getPosition().x, playerCharacter.getPosition().y, 2.0f);
 		batch.end();
 	}
 
