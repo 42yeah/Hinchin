@@ -1,40 +1,12 @@
 data 511 hinchin.png #reserved
 push 511
 texture
-data 0 sea
-push 1
-push 0
-push 0 push 0
-fairy
-data 1 grass
-push 0
-push 1
-push 1 push 0
-fairy
-data 2 wall
-push 1
-push 2
-push 2 push 0
-fairy
-data 3 floor
-push 0
-push 3
-push 0 push 1
-fairy
-data 4 lava
-push 1
-push 4
-push 1 push 1
-fairy
-data 5 ice
-push 0
-push 5
-push 1 push 2
-fairy
-data 6 sand
-push 0
-push 6
-push 0 push 3
-fairy
+fairy 1 0 0 sea
+fairy 0 1 0 grass
+fairy 1 2 0 wall
+fairy 0 0 1 floor
+fairy 0 1 1 lava
+fairy 0 2 0 ice
+fairy 0 0 3 sand
 push 0
 end
