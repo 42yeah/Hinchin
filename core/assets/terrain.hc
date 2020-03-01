@@ -31,5 +31,10 @@ push 0
 push 5
 push 1 push 2
 fairy
+data 6 sand
+push 0
+push 6
+push 0 push 3
+fairy
 push 0
 end

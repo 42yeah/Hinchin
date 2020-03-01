@@ -34,6 +34,14 @@ public class Entity {
         position.add(deltaPos.scl(0.1f));
     }
 
+    /**
+     * 返回当前物体名字。
+     * @return 物体名字
+     */
+    public String getName() {
+        return fairy.name;
+    }
+
     public void immediatelyJump() {
         position = snatch.cpy().scl(size.cpy().scl(0.5f));
     }
