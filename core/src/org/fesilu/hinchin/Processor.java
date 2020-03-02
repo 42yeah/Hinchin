@@ -4,6 +4,8 @@ package org.fesilu.hinchin;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
+import sun.jvm.hotspot.tools.JMap;
+import sun.jvm.hotspot.tools.PMap;
 
 import java.awt.image.ImageProducer;
 import java.io.*;
@@ -203,22 +205,45 @@ public class Processor {
             float y = popf(), x = popf();
             int index = pop();
             GameMap map = (GameMap) attachment;
-            int sx = (int) Math.round(x * map.mapSize.x);
-            int sy = (int) Math.round(y * map.mapSize.y);
+            int sx = standarize(x, map.mapSize.x);
+            int sy = standarize(y, map.mapSize.y);
             map.entities.add(new Entity(new Vector2(sx, sy), map.game.cosmetics.get(data[index]), 2.0f));
         } else if (instruction.equals("rnd")) {
             float gen = Generator.getRng().nextFloat();
             pushf(gen);
         } else if (instruction.equals("room")) {
             GameMap map = (GameMap) attachment;
-            int h = standarize(popf(), map.mapSize.y),
-                    w = standarize(popf(), map.mapSize.x),
+            int h = standarize(popf(), map.mapSize.y) + 3,
+                    w = standarize(popf(), map.mapSize.x) + 3,
                     y = standarize(popf(), map.mapSize.y),
                     x = standarize(popf(), map.mapSize.x);
 //            // 连续 Processor
             Processor processor = new Processor(Gdx.files.internal(fetch()).file(), 512);
             processor.attach(attachment);
             Generator.placeRoom((GameMap) attachment, processor, x, y, w, h);
+        } else if (instruction.equals("getterrain")) {
+            GameMap map = (GameMap) attachment;
+            int y = standarize(popf(), map.mapSize.y), x = standarize(popf(), map.mapSize.x);
+            int index = (int) toNumber(fetch());
+            if (map.map[y][x] != null) {
+                data[index] = map.map[y][x].getName();
+            } else {
+                data[index] = "null";
+            }
+        } else if (instruction.equals("cmpdata")) {
+            int b = pop(), a = pop();
+            push(data[a].equals(data[b]) ? 0 : 1);
+        } else if (instruction.equals("rmplant")) {
+            GameMap map = (GameMap) attachment;
+            int y = standarize(popf(), map.mapSize.y),
+                    x = standarize(popf(), map.mapSize.x);
+            System.out.println("Removing plant at " + x + ", " + y);
+            for (int i = 0; i < map.entities.size(); i++) {
+                if (map.entities.get(i).getSnatch().equals(new Vector2(x, y))) {
+                    map.entities.remove(i);
+                    i--;
+                }
+            }
         }
         return false;
     }
@@ -243,7 +268,7 @@ public class Processor {
      */
     private int pop() {
         if (pointer >= memory.length || pointer < 0) {
-            System.err.println("WARNING! Pointer is underflowing at " + counter);
+            System.err.println("WARNING! Pointer is underflowing at " + counter + ": " + getNearbyCode(counter));
             return 0;
         }
         int ret = (int) memory[pointer];
@@ -257,7 +282,7 @@ public class Processor {
      */
     private float popf() {
         if (pointer >= memory.length || pointer < 0) {
-            System.err.println("WARNING! Pointer is underflowing at " + counter);
+            System.err.println("WARNING! Pointer is underflowing at " + counter + ": " + getNearbyCode(counter));
             return 0;
         }
         float ret = memory[pointer];
@@ -268,7 +293,7 @@ public class Processor {
     public void push(int value) {
         pointer++;
         if (pointer >= memory.length || pointer < 0) {
-            System.err.println("WARNING! Pointer is overflowing at " + counter);
+            System.err.println("WARNING! Pointer is overflowing at " + counter + ": " + getNearbyCode(counter));
             return;
         }
         memory[pointer] = value;
@@ -277,7 +302,7 @@ public class Processor {
     public void pushf(float value) {
         pointer++;
         if (pointer >= memory.length || pointer < 0) {
-            System.err.println("WARNING! Pointer is overflowing at " + counter);
+            System.err.println("WARNING! Pointer is overflowing at " + counter + ": " + getNearbyCode(counter));
             return;
         }
         memory[pointer] = value;
@@ -356,6 +381,16 @@ public class Processor {
 
     public String[] getData() {
         return data;
+    }
+
+    private String getNearbyCode(int counter) {
+        String comb = "... ";
+        for (int i = counter - 2; i <= counter + 2; i++) {
+            if (i <= 0 || i >= instructions.length) { continue; }
+            comb += instructions[i] + " ";
+        }
+        comb += "...";
+        return comb;
     }
 
     private String[] instructions;
