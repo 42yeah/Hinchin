@@ -31,7 +31,7 @@ public class Entity {
      */
     public void update(float deltaTime) {
         Vector2 deltaPos = snatch.cpy().scl(size.cpy().scl(0.5f)).sub(position);
-        position.add(deltaPos.scl(0.1f));
+        position.add(deltaPos.scl(0.2f));
     }
 
     /**

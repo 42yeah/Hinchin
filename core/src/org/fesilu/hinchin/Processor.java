@@ -37,6 +37,9 @@ public class Processor {
 
         // 用于贴图读取脚本
         fairies = new HashMap<>();
+
+        // 是否在注解区
+        commenting = false;
     }
 
     /**
@@ -61,8 +64,9 @@ public class Processor {
     private boolean execute(String instruction) {
         // 检查是不是注解
         if (instruction.startsWith("#")) {
-            return false;
+            commenting = !commenting;
         }
+        if (commenting) { return false; }
 
         // 遍历指令
         if (instruction.equals("end")) {
@@ -364,4 +368,5 @@ public class Processor {
     public HashMap<String, Fairy> fairies;
     private Texture texture;
     private Object attachment;
+    private boolean commenting;
 }

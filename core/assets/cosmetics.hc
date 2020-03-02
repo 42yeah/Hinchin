@@ -1,5 +1,5 @@
-#label-manual-ids-to-texture-so-that-stuffs-could-be-massively-generated
-data 511 hinchin.cosmetics.png #reserved
+# label manual ids to texture so that stuffs could be massively generated #
+data 511 hinchin.cosmetics.png # reserved #
 push 511
 texture
 fairy 0 0 0 man

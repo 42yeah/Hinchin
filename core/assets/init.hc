@@ -1,4 +1,4 @@
-#initializes-the-game
+# initializes the game #
 push 65
 push 40
 sps

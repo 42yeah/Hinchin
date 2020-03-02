@@ -1,15 +1,15 @@
-store 1 #y
+store 1 # y #
 clone
-store 2 #x
+store 2 # x #
 push 10
 mul
 push 10
 load 1
 mul
-perlin #value
+perlin # value #
 clone store 5
 push 0.5
-load 2 nml load 1 nml len push 1.0 mul nml #normalize(len((x,y))*1.0)
+load 2 nml load 1 nml len push 1.0 mul nml # normalize(len((x,y))*1.0) #
 sub clone store 6
 cmpf jg !place-sea
 load 5 push 0.15 add
@@ -21,10 +21,10 @@ load 4 push 0 cmp jne !plant-tree
     push 1 store 4
 j !ret
 plant-tree
-    rnd push 0.98 cmpf jl !ret #if(rnd>0.02)
-    load 2 load 1 rnd push 0.1 mul clone sayl rnd push 0.1 mul clone sayl el #xywh
+    rnd push 0.98 cmpf jl !ret # if(rnd>0.02) #
+    load 2 load 1 rnd push 0.1 mul clone sayl rnd push 0.1 mul clone sayl el # xywh #
     room temple_room.hc
-    #data #3 #tree #push #3 #load #2 #load #1 #plant #plant(tree,x,y)
+    # data 3 tree push 3 load 2 load 1 plant plant(tree,x,y) #
     j !ret
 place-sea
     data 0 sea

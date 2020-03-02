@@ -1,4 +1,4 @@
-data 511 hinchin.png #reserved
+data 511 hinchin.png # reserved #
 push 511
 texture
 fairy 1 0 0 sea
