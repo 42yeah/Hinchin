@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
 import java.io.File;
@@ -27,6 +28,7 @@ public class Game extends ApplicationAdapter {
 	@Override
 	public void create() {
 		batch = new SpriteBatch();
+		shape = new ShapeRenderer();
 
 		// 时间
 		lastInstant = System.currentTimeMillis();
@@ -40,7 +42,7 @@ public class Game extends ApplicationAdapter {
 
 		// 摄像头
 		float aspect = (float) Gdx.graphics.getWidth() / Gdx.graphics.getHeight();
-		camera = new OrthographicCamera(500.0f * aspect, 500.0f);
+		camera = new OrthographicCamera(1500.0f * aspect, 1500.0f);
 
 		// 测试地图
 		map = Generator.generate(this, new Processor(Gdx.files.internal("island_gen.hc").file(), 512), 100, 80);
@@ -69,6 +71,9 @@ public class Game extends ApplicationAdapter {
 		for (int i = 0; i < map.entities.size(); i++) {
 			map.entities.get(i).update(deltaTime);
 		}
+
+		// 更新关卡
+		changeMap(canChange);
 	}
 
 	/**
@@ -79,7 +84,6 @@ public class Game extends ApplicationAdapter {
 	public void render() {
 		// 更新游戏
 		updatePlayerCharacter();
-		changeMap(canChange);
 		update();
 
 		// 清除屏幕
@@ -92,11 +96,25 @@ public class Game extends ApplicationAdapter {
 		batch.begin();
 		for (int y = 0; y < map.mapSize.y; y++) {
 			for (int x = 0; x < map.mapSize.x; x++) {
-				map.map[y][x].draw(batch);
+				if (map.map[y][x].isVisibleTo(map, playerCharacter.getSnatch())) {
+					map.map[y][x].draw(batch);
+				} else if (map.map[y][x].discovered) {
+					map.map[y][x].draw(batch);
+					batch.end();
+					shape.begin(ShapeRenderer.ShapeType.Filled);
+					shape.setProjectionMatrix(camera.combined);
+					map.map[y][x].drawSilhouette(shape);
+					shape.end();
+					batch.begin();
+				}
 			}
 		}
 		for (int i = 0; i < map.entities.size(); i++) {
-			map.entities.get(i).draw(batch);
+			Entity entity = map.entities.get(i);
+			int rx = Math.round(entity.getSnatch().x), ry = Math.round(entity.getSnatch().y);
+			if (map.map[ry][rx].isVisibleTo(map, playerCharacter.getSnatch())) {
+				map.entities.get(i).draw(batch);
+			}
 		}
 		Vector2 snatch = playerCharacter.getSnatch().cpy().scl(cosmetics.get("man").sw, cosmetics.get("man").sh);
 		cosmetics.get("grass-hat").draw(batch, playerCharacter.getPosition().x, playerCharacter.getPosition().y, 2.0f);
@@ -151,15 +169,8 @@ public class Game extends ApplicationAdapter {
 
 	}
 
-	void changeMap(Boolean canChange) {
-		if (canChange) {
-			doChangeMap();
-//			this.canChange = true;
-		}
-	}
-
-	void doChangeMap() {
-		if (comparedDownstairs()) {
+	void changeMap(boolean canChange) {
+		if (canChange && comparedDownstairs()) {
 			canChange = false;
 			mapList.add(map);
 			map = Generator.generate(this, new Processor(Gdx.files.internal("island_gen.hc").file(), 512), 100, 80);
@@ -167,16 +178,15 @@ public class Game extends ApplicationAdapter {
 		}
 	}
 
-	Boolean comparedDownstairs() {
-		Boolean a = false;
+	boolean comparedDownstairs() {
 		for (int i = 0; i < map.entities.size(); i++) {
 			if (map.entities.get(i).getName().equals("downstairs")) {
 				if (map.entities.get(i).getSnatch().equals(playerCharacter.getSnatch())) {
-					a = true;
+					return true;
 				}
 			}
 		}
-		return a;
+		return false;
 	}
 
 	// deltaTime 是每一帧和上一帧的时差。这样可以保证不稳定的 FPS 下游戏一样正常运行。单位是秒。
@@ -185,6 +195,7 @@ public class Game extends ApplicationAdapter {
 	// lastInstant 是上一个瞬间的 System.currentTimeMillis. 用于计算毫秒级的 deltaTime。
 	private long lastInstant;
 	SpriteBatch batch;
+	ShapeRenderer shape;
 
 	// 人，动物等
 	// 因为在同一个包内，这些是 Processor (脚本) 可以访问的东西

@@ -11,8 +11,11 @@ place-floor
     data 0 floor
     j !ret
 place-door-or-wall
+    load 6 push 0 cmp je !plant-door
     rnd push 0.1 cmpf jge !place-wall
+plant-door
     data 0 door
+    push 1 store 6
     j !ret
 place-wall
     data 0 wall
